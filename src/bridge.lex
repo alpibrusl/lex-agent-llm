@@ -1,7 +1,7 @@
 # lex-agent-llm — the brain↔skin bridge
 #
 # Two AgentDefs meet here, and ONLY here:
-#   • lex-llm/agent.AgentDef   — the BRAIN: a model + tools + run_loop.
+#   • lex-llm/agent.AgentLoop  — the BRAIN: a model + tools + run_loop.
 #   • lex-agent/server.AgentDef — the SKIN: a capability reachable over A2A / MCP.
 #
 # lex-llm and lex-agent stay independent (neither imports the other). The glue —
@@ -83,7 +83,7 @@ fn first_text(parts :: List[amsg.Part]) -> Str {
 # The handle takes the inbound message's text as the user turn, runs the brain's
 # loop in-process, and returns the mapped outcome. Compose into an AgentDef and
 # serve over A2A + MCP with lex-mcp's serve_both (or a router /mcp route).
-fn skill_of_loop(capability :: cap.Capability, brain :: ag.AgentDef) -> srv.Skill {
+fn skill_of_loop(capability :: cap.Capability, brain :: ag.AgentLoop) -> srv.Skill {
   { capability: capability, handle: fn (m :: amsg.Message) -> [io, time, crypto, random, sql, fs_read, fs_write, net, concurrent, llm, proc] srv.HandlerOutcome {
     let conv := [UserMsg(first_text(m.parts))]
     outcome_of_steps(iter.to_list(ag.run_loop(brain, conv)))
