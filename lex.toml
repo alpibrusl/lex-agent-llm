@@ -1,7 +1,7 @@
 [package]
 name        = "lex-agent-llm"
 version     = "0.1.0"
-lex         = "0.9.7"
+lex         = "0.10.7"
 description = "The brain↔skin bridge: run a lex-llm agent loop as a lex-agent Skill (A2A/MCP-reachable). One place for the glue every LLM agent was copy-pasting."
 license     = "EUPL-1.2"
 
