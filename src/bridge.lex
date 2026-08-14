@@ -25,7 +25,8 @@
 # that wants isolation keeps its own invocation and calls outcome_of_steps.
 #
 # Effects: collect/outcome_of_steps are pure; the skill_of_loop handle carries
-# the Skill handler row (the brain's run_loop touches net, llm, io, proc).
+# lex-agent's fixed Skill.handle row (the brain's run_loop only touches net,
+# llm, io, proc, approval — the rest is unused headroom Skill.handle requires).
 
 import "std.list" as list
 
@@ -84,7 +85,7 @@ fn first_text(parts :: List[amsg.Part]) -> Str {
 # loop in-process, and returns the mapped outcome. Compose into an AgentDef and
 # serve over A2A + MCP with lex-mcp's serve_both (or a router /mcp route).
 fn skill_of_loop(capability :: cap.Capability, brain :: ag.AgentLoop) -> srv.Skill {
-  { capability: capability, handle: fn (m :: amsg.Message) -> [io, time, crypto, random, sql, fs_read, fs_write, net, concurrent, llm, proc] srv.HandlerOutcome {
+  { capability: capability, handle: fn (m :: amsg.Message) -> [io, time, crypto, random, sql, fs_read, fs_write, net, concurrent, llm, proc, approval] srv.HandlerOutcome {
     let conv := [UserMsg(first_text(m.parts))]
     outcome_of_steps(iter.to_list(ag.run_loop(brain, conv)))
   } }
